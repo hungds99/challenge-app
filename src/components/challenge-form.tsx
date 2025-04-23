@@ -95,6 +95,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         router.push(`/challenges/${challengeId}`);
       }
     } catch (err) {
+      console.error('Error saving challenge:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
