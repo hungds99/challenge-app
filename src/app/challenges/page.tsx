@@ -1,3 +1,4 @@
+import { Award, Plus, Trophy } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Challenge } from '@/lib/supabase';
 import Link from 'next/link';
@@ -39,9 +40,9 @@ export default async function ChallengesPage() {
         <h1 className='text-3xl font-bold text-gray-900'>Available Challenges</h1>
         <Link
           href='/challenges/create'
-          className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
+          className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center'
         >
-          Create Challenge
+          <Plus className="h-4 w-4 mr-1" /> Create Challenge
         </Link>
       </div>
 
@@ -52,7 +53,7 @@ export default async function ChallengesPage() {
               <div className='flex items-center justify-between'>
                 <h2 className='text-xl font-semibold text-gray-900'>{challenge.title}</h2>
                 <span
-                  className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                  className={`px-2 py-1 text-xs font-semibold rounded-full flex items-center ${
                     challenge.difficulty === 'easy'
                       ? 'bg-green-100 text-green-800'
                       : challenge.difficulty === 'medium'
@@ -60,8 +61,12 @@ export default async function ChallengesPage() {
                       : 'bg-red-100 text-red-800'
                   }`}
                 >
-                  {challenge.difficulty}
+                  <Trophy className="h-3 w-3 mr-1" /> {challenge.difficulty}
                 </span>
+              </div>
+              <div className='mt-2 flex items-center'>
+                <Award className="h-4 w-4 mr-1 text-blue-600" />
+                <span className="text-sm text-gray-600">{challenge.points} points</span>
               </div>
               <div className='mt-4'>
                 <Link

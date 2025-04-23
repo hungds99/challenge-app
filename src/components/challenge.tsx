@@ -3,6 +3,7 @@
 import MarkdownEditor from '@/components/markdown-editor';
 import { useAuth } from '@/contexts/AuthContext';
 import { Challenge, Submission, supabase } from '@/lib/supabase';
+import { Award, CheckCircle, Clock, Edit, XCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -99,9 +100,11 @@ export default function ChallengeDetail() {
       <h1 className='text-3xl font-bold mb-4'>{challenge.title}</h1>
       <div className='flex justify-between items-center mb-4'>
         <div className='flex gap-2'>
-          <span className='px-2 py-1 text-sm rounded-full bg-gray-100'>{challenge.difficulty}</span>
-          <span className='px-2 py-1 text-sm rounded-full bg-gray-100'>
-            {challenge.points} points
+          <span className='px-2 py-1 text-sm rounded-full bg-gray-100 flex items-center'>
+            <Award className="h-4 w-4 mr-1" /> {challenge.difficulty}
+          </span>
+          <span className='px-2 py-1 text-sm rounded-full bg-gray-100 flex items-center'>
+            <Award className="h-4 w-4 mr-1" /> {challenge.points} points
           </span>
         </div>
         {user?.id === challenge.created_by && (
@@ -109,7 +112,7 @@ export default function ChallengeDetail() {
             onClick={() => router.push(`/challenges/${id}/edit`)}
             className='inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
           >
-            Edit Challenge
+            <Edit className="h-4 w-4 mr-1" /> Edit Challenge
           </button>
         )}
       </div>
@@ -163,12 +166,14 @@ export default function ChallengeDetail() {
                 : 'bg-yellow-100'
             }`}
           >
-            <p className='font-medium'>
-              {submission.status === 'approved'
-                ? 'Correct!'
-                : submission.status === 'rejected'
-                ? 'Incorrect'
-                : 'Pending Review'}
+            <p className='font-medium flex items-center'>
+              {submission.status === 'approved' ? (
+                <><CheckCircle className="h-5 w-5 mr-2 text-green-600" /> Correct!</>
+              ) : submission.status === 'rejected' ? (
+                <><XCircle className="h-5 w-5 mr-2 text-red-600" /> Incorrect</>
+              ) : (
+                <><Clock className="h-5 w-5 mr-2 text-yellow-600" /> Pending Review</>
+              )}
             </p>
             <p>Your answer: {submission.answer}</p>
             {submission.points > 0 && <p>Points awarded: {submission.points}</p>}
