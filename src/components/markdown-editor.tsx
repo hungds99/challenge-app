@@ -11,9 +11,10 @@ const MDEditor = dynamic(
 
 interface MarkdownEditorProps {
   value: string;
-  onChange: (value?: string) => void;
+  onChange?: (value?: string) => void;
   height?: number;
   preview?: 'live' | 'preview' | 'edit';
+  hideToolbar?: boolean;
 }
 
 export default function MarkdownEditor({
@@ -21,6 +22,7 @@ export default function MarkdownEditor({
   onChange,
   height = 400,
   preview = "live",
+  hideToolbar = false,
 }: MarkdownEditorProps) {
   return (
     <div data-color-mode="light">
@@ -29,6 +31,7 @@ export default function MarkdownEditor({
         onChange={onChange}
         height={height}
         preview={preview}
+        hideToolbar={hideToolbar}
       />
     </div>
   );
