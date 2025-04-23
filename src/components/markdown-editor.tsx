@@ -13,12 +13,14 @@ interface MarkdownEditorProps {
   value: string;
   onChange: (value?: string) => void;
   height?: number;
+  preview?: 'live' | 'preview' | 'edit';
 }
 
 export default function MarkdownEditor({
   value,
   onChange,
   height = 400,
+  preview = "live",
 }: MarkdownEditorProps) {
   return (
     <div data-color-mode="light">
@@ -26,7 +28,7 @@ export default function MarkdownEditor({
         value={value}
         onChange={onChange}
         height={height}
-        preview="live"
+        preview={preview}
       />
     </div>
   );
