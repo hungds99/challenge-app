@@ -1,4 +1,4 @@
-# Challenge Platform
+# Challenge Hub
 
 A web application platform for creating and participating in coding challenges, built with Next.js and Supabase.
 

@@ -5,7 +5,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col items-center">
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to the Challenge Platform</h1>
+        <h1 className="text-5xl font-bold text-gray-900 mb-6">Welcome to the Challenge Hub</h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto">
           Improve your coding skills by taking part in exciting challenges created by the community.
         </p>

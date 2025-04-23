@@ -8,7 +8,7 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Challenge Platform",
+  title: "Challenge Hub",
   description: "A platform for creating and participating in coding challenges",
 };
 
