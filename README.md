@@ -8,13 +8,12 @@ A web application platform for creating and participating in coding challenges, 
 - Challenge creation and management
 - Challenge submission and review system
 - Leaderboard and user rankings
-- Time-limited challenges
 - Admin review system
 
 ## Prerequisites
 
-- Node.js 18.x or later
-- npm or yarn
+- Node.js 20.x or later
+- npm (comes with Node.js)
 - Supabase account
 
 ## Setup
@@ -41,74 +40,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 
 4. Set up your Supabase database with the following tables:
 
-### Users Table
-
-```sql
-create table users (
-  id uuid references auth.users on delete cascade,
-  email text,
-  username text,
-  role text check (role in ('admin', 'contributor', 'user')),
-  points integer default 0,
-  created_at timestamp with time zone default timezone('utc'::text, now()),
-  primary key (id)
-);
-```
-
-### Challenges Table
-
-```sql
-create table challenges (
-  id uuid default uuid_generate_v4() primary key,
-  title text not null,
-  description text not null,
-  rules text not null,
-  category text not null,
-  difficulty text check (difficulty in ('easy', 'medium', 'hard')),
-  status text check (status in ('draft', 'pending', 'published')),
-  created_by uuid references users(id),
-  created_at timestamp with time zone default timezone('utc'::text, now()),
-  updated_at timestamp with time zone default timezone('utc'::text, now()),
-  expected_answer text,
-  time_limit integer
-);
-```
-
-### Submissions Table
-
-```sql
-create table submissions (
-  id uuid default uuid_generate_v4() primary key,
-  challenge_id uuid references challenges(id),
-  user_id uuid references users(id),
-  answer text not null,
-  status text check (status in ('pending', 'approved', 'rejected')),
-  score integer default 0,
-  created_at timestamp with time zone default timezone('utc'::text, now()),
-  updated_at timestamp with time zone default timezone('utc'::text, now())
-);
-```
-
-5. Create a function to increment user points:
-
-```sql
-create or replace function increment_user_points(user_id uuid, points integer)
-returns void as $$
-begin
-  update users
-  set points = points + $2
-  where id = $1;
-end;
-$$ language plpgsql security definer;
-```
-
-6. Start the development server:
-
-```bash
-npm run dev
-```
-
-7. Open [http://localhost:3000](http://localhost:3000) in your browser.
+- Follow file `schema.sql` to create the necessary tables in your Supabase database.
+- Run the SQL commands in the Supabase SQL editor to set up the database schema.
+- Ensure you have the necessary policies and roles set up for user authentication and challenge management.
 
 ## User Roles
 
