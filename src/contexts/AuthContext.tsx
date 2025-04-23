@@ -8,6 +8,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   signUp: (email: string, password: string, username: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -39,6 +40,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   };
 
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+    if (error) throw error;
+  };
+
   const signUp = async (email: string, password: string, username: string) => {
     const { error: signUpError } = await supabase.auth.signUp({
       email,
@@ -62,6 +73,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user,
     loading,
     signIn,
+    signInWithGoogle,
     signUp,
     signOut,
   };
@@ -75,4 +87,4 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
-} 
+}
