@@ -3,20 +3,23 @@
 import MarkdownEditor from '@/components/markdown-editor';
 import { useAuth } from '@/contexts/AuthContext';
 import { Challenge, Submission, supabase } from '@/lib/supabase';
-import { Award, CheckCircle, Clock, Edit, XCircle } from 'lucide-react';
+import { Award, CheckCircle, Clock, Edit, FileText, XCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function ChallengeDetail() {
   const { id } = useParams();
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
+
+  // Check if user is admin or contributor
+  const isReviewer = profile?.role === 'admin' || profile?.role === 'contributor';
 
   useEffect(() => {
     const fetchChallenge = async () => {
@@ -107,14 +110,25 @@ export default function ChallengeDetail() {
             <Award className="h-4 w-4 mr-1" /> {challenge.points} points
           </span>
         </div>
-        {user?.id === challenge.created_by && (
-          <button
-            onClick={() => router.push(`/challenges/${id}/edit`)}
-            className='inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-          >
-            <Edit className="h-4 w-4 mr-1" /> Edit Challenge
-          </button>
-        )}
+        <div className='flex gap-2'>
+          {/* Show submissions button for admins and contributors */}
+          {isReviewer && (
+            <button
+              onClick={() => router.push(`/challenges/${id}/submissions`)}
+              className='inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            >
+              <FileText className="h-4 w-4 mr-1" /> Review Submissions
+            </button>
+          )}
+          {user?.id === challenge.created_by && (
+            <button
+              onClick={() => router.push(`/challenges/${id}/edit`)}
+              className='inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            >
+              <Edit className="h-4 w-4 mr-1" /> Edit Challenge
+            </button>
+          )}
+        </div>
       </div>
 
       <div className='prose max-w-none mb-8'>
