@@ -63,7 +63,6 @@ export default async function ChallengesPage() {
                   {challenge.difficulty}
                 </span>
               </div>
-              <p className='mt-2 text-gray-600 line-clamp-3'>{challenge.description}</p>
               <div className='mt-4'>
                 <Link
                   href={`/challenges/${challenge.id}`}
