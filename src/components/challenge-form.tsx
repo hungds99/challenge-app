@@ -2,20 +2,9 @@
 
 import MarkdownEditor from '@/components/markdown-editor';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/lib/supabase';
+import { Challenge, supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-interface Challenge {
-  id: string;
-  title: string;
-  description: string;
-  difficulty: string;
-  points: number;
-  expected_answers: string[] | null;
-  explanation: string;
-  created_by: string;
-}
 
 interface ChallengeFormProps {
   challengeId?: string;
@@ -33,9 +22,12 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
     description: '',
     difficulty: 'easy',
     points: 10,
-    expected_answers: [''],
+    status: 'draft',
+    expected_answers: [],
     explanation: '',
-    created_by: '',
+    created_by: user?.id || '', // Set created_by to the current user's ID
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   });
 
   useEffect(() => {
@@ -75,10 +67,12 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         description: formData.description,
         difficulty: formData.difficulty,
         points: formData.points,
+        status: formData.status, // Add status field
         expected_answers:
           formData.expected_answers?.filter((answer) => answer.trim() !== '') || null,
         explanation: formData.explanation,
         created_by: user.id,
+        updated_at: new Date().toISOString() // Always update the timestamp
       };
 
       if (mode === 'create') {
@@ -253,22 +247,6 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
           </div>
         </div>
 
-        <div className='bg-gray-50 p-4 rounded-lg'>
-          <label htmlFor='explanation' className='block text-sm font-semibold text-gray-700 mb-1'>
-            Solution Explanation
-          </label>
-          <p className='text-sm text-gray-500 mb-2'>
-            Provide a clear explanation of the solution that will be shown after completion.
-          </p>
-          <div className='mt-1'>
-            <MarkdownEditor
-              value={formData.explanation}
-              onChange={handleExplanationChange}
-              height={200}
-            />
-          </div>
-        </div>
-
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='bg-gray-50 p-4 rounded-lg'>
             <label htmlFor='difficulty' className='block text-sm font-semibold text-gray-700 mb-1'>
@@ -318,6 +296,50 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
             <p className='mt-1 text-xs text-gray-500'>
               Suggested: Easy (10-20), Medium (20-50), Hard (50-100)
             </p>
+          </div>
+        </div>
+
+        <div className='bg-gray-50 p-4 rounded-lg'>
+          <label htmlFor='status' className='block text-sm font-semibold text-gray-700 mb-1'>
+            Status
+          </label>
+          <select
+            id='status'
+            name='status'
+            value={formData.status}
+            onChange={handleChange}
+            className='mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 appearance-none bg-white transition-colors'
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
+              backgroundPosition: 'right 0.5rem center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: '1.5em 1.5em',
+              paddingRight: '2.5rem',
+            }}
+          >
+            <option value='draft'>Draft</option>
+            <option value='pending'>Pending Review</option>
+            {user?.role === 'admin' && <option value='published'>Published</option>}
+          </select>
+          <p className='mt-1 text-xs text-gray-500'>
+            Draft: Work in progress, Pending: Ready for review, Published: Live on the platform
+          </p>
+        </div>
+
+        <div className='bg-gray-50 p-4 rounded-lg'>
+          <label htmlFor='explanation' className='block text-sm font-semibold text-gray-700 mb-1'>
+            Explanation
+          </label>
+          <p className='text-sm text-gray-500 mb-2'>
+            Provide an explanation of the solution. This will be shown to users after they complete the challenge.
+          </p>
+          <div className='mt-1'>
+            <MarkdownEditor
+              value={formData.explanation}
+              onChange={handleExplanationChange}
+              height={200}
+            />
           </div>
         </div>
 

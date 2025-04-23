@@ -10,15 +10,14 @@ export type Challenge = {
   id: string;
   title: string;
   description: string;
-  rules: string;
-  category: string;
   difficulty: "easy" | "medium" | "hard";
+  points: number;
   status: "draft" | "pending" | "published";
+  expected_answers?: string[];
+  explanation: string;
   created_by: string;
   created_at: string;
   updated_at: string;
-  expected_answer?: string;
-  time_limit?: number;
 };
 
 export type User = {
@@ -28,6 +27,7 @@ export type User = {
   username: string;
   points: number;
   created_at: string;
+  updated_at: string;
 };
 
 export type Submission = {
@@ -36,7 +36,7 @@ export type Submission = {
   user_id: string;
   answer: string;
   status: "pending" | "approved" | "rejected";
-  score: number;
+  points: number;
   created_at: string;
   updated_at: string;
 };
