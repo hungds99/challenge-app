@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import MarkdownEditor from '@/components/MarkdownEditor';
+import MarkdownEditor from '@/components/markdown-editor';
 
 interface Challenge {
   id: string;
