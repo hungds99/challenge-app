@@ -3,10 +3,9 @@
 -- Enable UUID extension for generating unique IDs
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Users table
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email TEXT UNIQUE NOT NULL,
+-- Profiles table (linked to Supabase Auth)
+CREATE TABLE profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id),
     username TEXT UNIQUE NOT NULL,
     role TEXT NOT NULL CHECK (role IN ('admin', 'contributor', 'user')),
     points INTEGER NOT NULL DEFAULT 0,
@@ -24,7 +23,7 @@ CREATE TABLE challenges (
     status TEXT NOT NULL CHECK (status IN ('draft', 'pending', 'published')),
     expected_answers TEXT[], -- Array of strings for expected answers
     explanation TEXT NOT NULL,
-    created_by UUID NOT NULL REFERENCES users(id),
+    created_by UUID NOT NULL REFERENCES profiles(id),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -33,7 +32,7 @@ CREATE TABLE challenges (
 CREATE TABLE submissions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     challenge_id UUID NOT NULL REFERENCES challenges(id),
-    user_id UUID NOT NULL REFERENCES users(id),
+    user_id UUID NOT NULL REFERENCES profiles(id),
     answer TEXT NOT NULL,
     status TEXT NOT NULL CHECK (status IN ('pending', 'approved', 'rejected')),
     points INTEGER NOT NULL DEFAULT 0,
@@ -56,8 +55,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create triggers to automatically update the updated_at column
-CREATE TRIGGER update_users_updated_at
-BEFORE UPDATE ON users
+CREATE TRIGGER update_profiles_updated_at
+BEFORE UPDATE ON profiles
 FOR EACH ROW
 EXECUTE FUNCTION update_updated_at_column();
 

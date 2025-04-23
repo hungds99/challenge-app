@@ -23,22 +23,21 @@ export default function AuthCallbackPage() {
         if (data?.session?.user) {
           const user = data.session.user;
           
-          // Check if user exists in our users table
-          const { data: userData, error: userError } = await supabase
-            .from('users')
+          // Check if user exists in our profiles table
+          const { data: profileData, error: profileError } = await supabase
+            .from('profiles')
             .select('*')
             .eq('id', user.id)
             .single();
           
           // If user doesn't exist in our database, create a new profile
-          if (!userData && !userError) {
+          if (!profileData && !profileError) {
             // For Google login, we can extract the username from the email
             const username = user.email?.split('@')[0] || `user_${Math.random().toString(36).substring(2, 10)}`;
             
-            // Insert user into our users table
-            await supabase.from('users').insert([{
+            // Insert user into our profiles table
+            await supabase.from('profiles').insert([{
               id: user.id,
-              email: user.email,
               username,
               role: 'user',
               points: 0

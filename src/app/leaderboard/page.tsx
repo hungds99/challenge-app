@@ -1,30 +1,29 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
-import { User } from '@/lib/supabase';
+import { supabase, Profile } from '@/lib/supabase';
 
 export default function Leaderboard() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchUsers() {
+    async function fetchProfiles() {
       const { data, error } = await supabase
-        .from('users')
+        .from('profiles')
         .select('*')
         .order('points', { ascending: false });
 
       if (error) {
-        console.error('Error fetching users:', error);
+        console.error('Error fetching profiles:', error);
         return;
       }
 
-      setUsers(data as User[]);
+      setProfiles(data as Profile[]);
       setLoading(false);
     }
 
-    fetchUsers();
+    fetchProfiles();
   }, []);
 
   if (loading) {
@@ -54,27 +53,27 @@ export default function Leaderboard() {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.map((user, index) => (
-              <tr key={user.id}>
+            {profiles.map((profile, index) => (
+              <tr key={profile.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {index + 1}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.username}
+                  {profile.username}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                    user.role === 'admin'
+                    profile.role === 'admin'
                       ? 'bg-purple-100 text-purple-800'
-                      : user.role === 'contributor'
+                      : profile.role === 'contributor'
                       ? 'bg-blue-100 text-blue-800'
                       : 'bg-gray-100 text-gray-800'
                   }`}>
-                    {user.role}
+                    {profile.role}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {user.points}
+                  {profile.points}
                 </td>
               </tr>
             ))}
@@ -83,4 +82,4 @@ export default function Leaderboard() {
       </div>
     </div>
   );
-} 
+}

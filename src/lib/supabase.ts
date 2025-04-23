@@ -20,11 +20,10 @@ export type Challenge = {
   updated_at: string;
 };
 
-export type User = {
+export type Profile = {
   id: string;
-  email: string;
-  role: "admin" | "contributor" | "user";
   username: string;
+  role: "admin" | "contributor" | "user";
   points: number;
   created_at: string;
   updated_at: string;
