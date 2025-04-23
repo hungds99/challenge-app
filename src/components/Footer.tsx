@@ -1,10 +1,14 @@
 import Link from 'next/link';
 
-export default function Footer() {
+interface FooterProps {
+  className?: string;
+}
+
+export default function Footer({ className }: FooterProps) {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="bg-white border-t border-gray-200 mt-auto">
+    <footer className={`bg-white border-t border-gray-200 mt-auto ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center md:order-2 space-x-6">

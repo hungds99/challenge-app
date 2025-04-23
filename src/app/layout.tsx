@@ -19,14 +19,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full">
-      <body className={`${inter.className} h-full`}>
+      <body className={`${inter.className} h-full overflow-hidden`}>
         <AuthProvider>
-          <div className="flex flex-col min-h-screen">
-            <Navigation />
-            <main className="flex-grow max-w-7xl w-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
-              {children}
+          <div className="flex flex-col h-screen">
+            <Navigation className="sticky top-0 z-10" />
+            <main className="flex-grow overflow-auto">
+              <div className="max-w-7xl w-full h-full mx-auto py-8 px-4 sm:px-6 lg:px-8">
+                {children}
+              </div>
             </main>
-            <Footer />
+            <Footer className="sticky bottom-0 z-10" />
           </div>
         </AuthProvider>
       </body>
