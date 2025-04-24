@@ -5,6 +5,8 @@ import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 
 interface NavigationProps {
   className?: string;
@@ -61,46 +63,49 @@ export default function Navigation({ className }: NavigationProps) {
             {user ? (
               <div className='flex items-center space-x-4'>
                 <span className='text-sm text-gray-600'>{user.email}</span>
-                <button
+                <Button
+                  variant='ghost'
                   onClick={handleSignOut}
-                  className='text-sm font-medium text-gray-600 hover:text-blue-700 transition-colors'
+                  className='text-sm font-medium text-gray-600 hover:text-blue-700'
                 >
                   Sign out
-                </button>
+                </Button>
               </div>
             ) : (
               <div className='flex items-center space-x-4'>
-                <Link href='/login' className='text-sm font-medium text-gray-600 hover:text-blue-700 transition-colors'>
-                  Sign in
-                </Link>
-                <Link href='/register' className='px-3 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors'>
-                  Sign up
-                </Link>
+                <Button variant='ghost' asChild>
+                  <Link
+                    href='/login'
+                    className='text-sm font-medium text-gray-600 hover:text-blue-700'
+                  >
+                    Sign in
+                  </Link>
+                </Button>
+                <Button variant='default' asChild>
+                  <Link href='/register'>Sign up</Link>
+                </Button>
               </div>
             )}
           </div>
-          
+
           {/* Mobile menu button */}
           <div className='flex items-center sm:hidden'>
-            <button
+            <Button
+              variant='ghost'
+              size='icon'
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className='inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500'
               aria-expanded={mobileMenuOpen}
+              className='text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500'
             >
               <span className='sr-only'>Open main menu</span>
-              {/* Icon for menu */}
-              {!mobileMenuOpen ? (
-                <Menu className="h-6 w-6" />
-              ) : (
-                <X className="h-6 w-6" />
-              )}
-            </button>
+              {!mobileMenuOpen ? <Menu className='h-6 w-6' /> : <X className='h-6 w-6' />}
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Mobile menu */}
-      <div className={`${mobileMenuOpen ? 'block' : 'hidden'} sm:hidden`}>
+      <div className={cn(mobileMenuOpen ? 'block' : 'hidden', 'sm:hidden')}>
         <div className='pt-2 pb-3 space-y-1'>
           <Link
             href='/challenges'
@@ -129,27 +134,32 @@ export default function Navigation({ className }: NavigationProps) {
               <div className='block px-4 py-2 text-base font-medium text-gray-500'>
                 {user.email}
               </div>
-              <button
+              <Button
+                variant='ghost'
                 onClick={handleSignOut}
                 className='block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
               >
                 Sign out
-              </button>
+              </Button>
             </div>
           ) : (
             <div className='space-y-1'>
-              <Link
-                href='/login'
-                className='block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
-              >
-                Sign in
-              </Link>
-              <Link
-                href='/register'
-                className='block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
-              >
-                Sign up
-              </Link>
+              <Button variant='ghost' asChild className='w-full justify-start'>
+                <Link
+                  href='/login'
+                  className='block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
+                >
+                  Sign in
+                </Link>
+              </Button>
+              <Button variant='ghost' asChild className='w-full justify-start'>
+                <Link
+                  href='/register'
+                  className='block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
+                >
+                  Sign up
+                </Link>
+              </Button>
             </div>
           )}
         </div>
