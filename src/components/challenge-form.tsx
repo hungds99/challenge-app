@@ -5,7 +5,11 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Challenge, supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Plus, X, Loader2 } from 'lucide-react'; // Import Lucide icons
+import { Plus, X, Loader2 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select } from '@/components/ui/select';
+import { Card } from '@/components/ui/card';
 
 interface ChallengeFormProps {
   challengeId?: string;
@@ -26,7 +30,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
     status: 'draft',
     expected_answers: [],
     explanation: '',
-    created_by: user?.id || '', // Set created_by to the current user's ID
+    created_by: user?.id || '',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });
@@ -68,12 +72,12 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         description: formData.description,
         difficulty: formData.difficulty,
         points: formData.points,
-        status: formData.status, // Add status field
+        status: formData.status,
         expected_answers:
           formData.expected_answers?.filter((answer) => answer.trim() !== '') || null,
         explanation: formData.explanation,
         created_by: user.id,
-        updated_at: new Date().toISOString() // Always update the timestamp
+        updated_at: new Date().toISOString(),
       };
 
       if (mode === 'create') {
@@ -139,7 +143,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
   };
 
   return (
-    <div className='max-w-4xl mx-auto p-6 bg-white rounded-lg'>
+    <Card className='max-w-4xl mx-auto p-6'>
       <h1 className='text-3xl font-bold mb-6 text-indigo-700 border-b pb-2'>
         {mode === 'create' ? 'Create Challenge' : 'Edit Challenge'}
       </h1>
@@ -159,7 +163,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
           <label htmlFor='title' className='block text-sm font-semibold text-gray-700 mb-1'>
             Title
           </label>
-          <input
+          <Input
             type='text'
             id='title'
             name='title'
@@ -167,7 +171,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
             onChange={handleChange}
             required
             placeholder='Enter an engaging title for your challenge'
-            className='mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors'
+            className='mt-1'
           />
         </div>
 
@@ -198,32 +202,33 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
             {formData.expected_answers?.map((answer, index) => (
               <div key={index} className='flex gap-2 items-center'>
                 <div className='flex-1 relative'>
-                  <input
+                  <Input
                     type='text'
                     value={answer}
                     onChange={(e) => handleExpectedAnswerChange(index, e.target.value)}
-                    className='w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors'
                     placeholder='Enter an expected answer'
                   />
                 </div>
-                <button
+                <Button
                   type='button'
                   onClick={() => removeExpectedAnswer(index)}
-                  className='p-2 text-red-600 hover:text-red-800 hover:bg-red-100 rounded-full transition-colors'
-                  aria-label='Remove answer'
+                  variant='outline'
+                  className='p-2 text-red-600 hover:text-red-800'
+                  size='icon'
                 >
-                  <X className="h-5 w-5" />
-                </button>
+                  <X className='h-5 w-5' />
+                </Button>
               </div>
             ))}
-            <button
+            <Button
               type='button'
               onClick={addExpectedAnswer}
+              variant='ghost'
               className='mt-2 flex items-center text-sm text-indigo-600 hover:text-indigo-800 font-medium'
             >
-              <Plus className="h-5 w-5 mr-1" />
+              <Plus className='h-5 w-5 mr-1' />
               Add Another Answer
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -232,25 +237,17 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
             <label htmlFor='difficulty' className='block text-sm font-semibold text-gray-700 mb-1'>
               Difficulty Level
             </label>
-            <select
+            <Select
               id='difficulty'
               name='difficulty'
               value={formData.difficulty}
               onChange={handleChange}
-              className='mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 appearance-none bg-white transition-colors'
-              style={{
-                backgroundImage:
-                  "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
-                backgroundPosition: 'right 0.5rem center',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: '1.5em 1.5em',
-                paddingRight: '2.5rem',
-              }}
+              className='mt-1 w-full'
             >
               <option value='easy'>Easy</option>
               <option value='medium'>Medium</option>
               <option value='hard'>Hard</option>
-            </select>
+            </Select>
           </div>
 
           <div className='bg-gray-50 p-4 rounded-lg'>
@@ -258,7 +255,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
               Points Value
             </label>
             <div className='relative mt-1'>
-              <input
+              <Input
                 type='number'
                 id='points'
                 name='points'
@@ -267,7 +264,6 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
                 min='1'
                 max='100'
                 required
-                className='block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors'
               />
               <div className='absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none'>
                 <span className='text-gray-500'>pts</span>
@@ -283,25 +279,17 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
           <label htmlFor='status' className='block text-sm font-semibold text-gray-700 mb-1'>
             Status
           </label>
-          <select
+          <Select
             id='status'
             name='status'
             value={formData.status}
             onChange={handleChange}
-            className='mt-1 block w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 appearance-none bg-white transition-colors'
-            style={{
-              backgroundImage:
-                "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")",
-              backgroundPosition: 'right 0.5rem center',
-              backgroundRepeat: 'no-repeat',
-              backgroundSize: '1.5em 1.5em',
-              paddingRight: '2.5rem',
-            }}
+            className='mt-1 w-full'
           >
             <option value='draft'>Draft</option>
             <option value='pending'>Pending Review</option>
             {user?.role === 'admin' && <option value='published'>Published</option>}
-          </select>
+          </Select>
           <p className='mt-1 text-xs text-gray-500'>
             Draft: Work in progress, Pending: Ready for review, Published: Live on the platform
           </p>
@@ -312,7 +300,8 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
             Explanation
           </label>
           <p className='text-sm text-gray-500 mb-2'>
-            Provide an explanation of the solution. This will be shown to users after they complete the challenge.
+            Provide an explanation of the solution. This will be shown to users after they complete
+            the challenge.
           </p>
           <div className='mt-1'>
             <MarkdownEditor
@@ -324,23 +313,20 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         </div>
 
         <div className='flex flex-col sm:flex-row justify-end gap-4 pt-4'>
-          <button
+          <Button
             type='button'
             onClick={() =>
               router.push(mode === 'create' ? '/challenges' : `/challenges/${challengeId}`)
             }
-            className='w-full sm:w-auto px-6 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors'
+            variant='outline'
+            className='w-full sm:w-auto'
           >
             Cancel
-          </button>
-          <button
-            type='submit'
-            disabled={loading}
-            className='w-full sm:w-auto px-6 py-2.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition-colors'
-          >
+          </Button>
+          <Button type='submit' disabled={loading} variant='default' className='w-full sm:w-auto'>
             {loading ? (
               <span className='flex items-center justify-center'>
-                <Loader2 className="animate-spin h-4 w-4 mr-2" />
+                <Loader2 className='animate-spin h-4 w-4 mr-2' />
                 {mode === 'create' ? 'Creating...' : 'Saving...'}
               </span>
             ) : mode === 'create' ? (
@@ -348,9 +334,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
             ) : (
               'Save Changes'
             )}
-          </button>
+          </Button>
         </div>
       </form>
-    </div>
+    </Card>
   );
 }
