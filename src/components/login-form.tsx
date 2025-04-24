@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -61,9 +62,9 @@ export default function LoginForm() {
       )}
       <div className='space-y-4'>
         <div>
-          <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+          <Label htmlFor='email' className='mb-1' required>
             Email address
-          </label>
+          </Label>
           <Input
             id='email'
             name='email'
@@ -75,9 +76,9 @@ export default function LoginForm() {
           />
         </div>
         <div>
-          <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
+          <Label htmlFor='password' className='mb-1' required>
             Password
-          </label>
+          </Label>
           <Input
             id='password'
             name='password'

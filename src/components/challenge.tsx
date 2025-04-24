@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
 
 export default function ChallengeDetail() {
   const { id } = useParams();
@@ -153,9 +154,9 @@ export default function ChallengeDetail() {
       {!submission ? (
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div>
-            <label htmlFor='answer' className='block text-sm font-medium text-gray-700 mb-1'>
+            <Label htmlFor='answer' className='mb-1' required>
               Your Answer
-            </label>
+            </Label>
             <Input
               type='text'
               id='answer'

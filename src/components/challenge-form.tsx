@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 interface ChallengeFormProps {
   challengeId?: string;
@@ -160,9 +161,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
 
       <form onSubmit={handleSubmit} className='space-y-8'>
         <div className='bg-gray-50 p-4 rounded-lg'>
-          <label htmlFor='title' className='block text-sm font-semibold text-gray-700 mb-1'>
+          <Label htmlFor='title' className='mb-1' required>
             Title
-          </label>
+          </Label>
           <Input
             type='text'
             id='title'
@@ -176,9 +177,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         </div>
 
         <div className='bg-gray-50 p-4 rounded-lg'>
-          <label htmlFor='description' className='block text-sm font-semibold text-gray-700 mb-1'>
+          <Label htmlFor='description' className='mb-1' required>
             Description
-          </label>
+          </Label>
           <p className='text-sm text-gray-500 mb-2'>
             Use Markdown to format your challenge description. Include clear instructions and any
             necessary context.
@@ -193,7 +194,7 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         </div>
 
         <div className='bg-gray-50 p-4 rounded-lg'>
-          <label className='block text-sm font-semibold text-gray-700 mb-2'>Expected Answers</label>
+          <Label className='mb-2'>Expected Answers</Label>
           <p className='text-sm text-gray-500 mb-3'>
             Add one or more acceptable answers. Leave empty for challenges that require manual
             review.
@@ -234,9 +235,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
 
         <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
           <div className='bg-gray-50 p-4 rounded-lg'>
-            <label htmlFor='difficulty' className='block text-sm font-semibold text-gray-700 mb-1'>
+            <Label htmlFor='difficulty' className='mb-1'>
               Difficulty Level
-            </label>
+            </Label>
             <Select
               id='difficulty'
               name='difficulty'
@@ -251,9 +252,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
           </div>
 
           <div className='bg-gray-50 p-4 rounded-lg'>
-            <label htmlFor='points' className='block text-sm font-semibold text-gray-700 mb-1'>
+            <Label htmlFor='points' className='mb-1' required>
               Points Value
-            </label>
+            </Label>
             <div className='relative mt-1'>
               <Input
                 type='number'
@@ -276,9 +277,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         </div>
 
         <div className='bg-gray-50 p-4 rounded-lg'>
-          <label htmlFor='status' className='block text-sm font-semibold text-gray-700 mb-1'>
+          <Label htmlFor='status' className='mb-1'>
             Status
-          </label>
+          </Label>
           <Select
             id='status'
             name='status'
@@ -296,9 +297,9 @@ export default function ChallengeForm({ challengeId, mode }: ChallengeFormProps)
         </div>
 
         <div className='bg-gray-50 p-4 rounded-lg'>
-          <label htmlFor='explanation' className='block text-sm font-semibold text-gray-700 mb-1'>
+          <Label htmlFor='explanation' className='mb-1'>
             Explanation
-          </label>
+          </Label>
           <p className='text-sm text-gray-500 mb-2'>
             Provide an explanation of the solution. This will be shown to users after they complete
             the challenge.
