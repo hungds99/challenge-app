@@ -2,8 +2,8 @@
 
 import MarkdownEditor from '@/components/markdown-editor';
 import { useAuth } from '@/contexts/AuthContext';
-import { Challenge, Submission, supabase } from '@/lib/supabase';
-import { Award, CheckCircle, Clock, Edit, FileText, XCircle } from 'lucide-react';
+import { Challenge, Profile, Submission, supabase } from '@/lib/supabase';
+import { Award, CheckCircle, Clock, Edit, FileText, User, XCircle } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,9 @@ export default function ChallengeDetail() {
   const { id } = useParams();
   const router = useRouter();
   const { user, profile } = useAuth();
-  const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [challenge, setChallenge] = useState<
+    (Challenge & { creator?: Pick<Profile, 'username'> }) | null
+  >(null);
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [answer, setAnswer] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,7 +31,16 @@ export default function ChallengeDetail() {
 
   useEffect(() => {
     const fetchChallenge = async () => {
-      const { data, error } = await supabase.from('challenges').select('*').eq('id', id).single();
+      const { data, error } = await supabase
+        .from('challenges')
+        .select(
+          `
+          *,
+          creator:profiles!created_by(username)
+        `,
+        )
+        .eq('id', id)
+        .single();
 
       if (error) {
         setError('Failed to load challenge');
@@ -139,6 +150,11 @@ export default function ChallengeDetail() {
             </Button>
           )}
         </div>
+      </div>
+
+      <div className='flex items-center mb-6'>
+        <User className='h-4 w-4 mr-1 text-gray-600' />
+        <span className='text-sm text-gray-600'>Created by {challenge.creator?.username}</span>
       </div>
 
       <div className='prose max-w-none mb-8'>

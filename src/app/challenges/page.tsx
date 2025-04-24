@@ -1,34 +1,27 @@
-import { Award, Plus, Trophy } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
-import { Challenge } from '@/lib/supabase';
+import { Challenge, Profile, supabase } from '@/lib/supabase';
+import { Award, Plus, Trophy, User } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 async function getChallenges() {
   const { data: challenges, error } = await supabase
     .from('challenges')
-    .select('*')
+    .select(
+      `
+      *,
+      profiles:created_by(username)
+    `,
+    )
     .eq('status', 'published')
     .order('created_at', { ascending: false });
 
   if (error) {
-    console.error('Error fetching challenges:', error);
-    return [
-      {
-        id: '1',
-        title: 'No challenges available',
-        description: 'No challenges available',
-        difficulty: 'easy',
-        points: 0,
-        expected_answers: [],
-        explanation: 'No challenges available',
-        created_by: 'admin',
-        status: 'published',
-        created_at: new Date().toISOString(),
-      },
-    ];
+    return [];
   }
 
-  return challenges as Challenge[];
+  return challenges as (Challenge & { profiles: Pick<Profile, 'username'> })[];
 }
 
 export default async function ChallengesPage() {
@@ -38,46 +31,53 @@ export default async function ChallengesPage() {
     <div className='space-y-6'>
       <div className='flex justify-between items-center'>
         <h1 className='text-3xl font-bold text-gray-900'>Available Challenges</h1>
-        <Link
-          href='/challenges/create'
-          className='bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center'
-        >
-          <Plus className="h-4 w-4 mr-1" /> Create Challenge
-        </Link>
+        <Button variant='default' asChild>
+          <Link href='/challenges/create' className='flex items-center'>
+            <Plus className='h-4 w-4 mr-1' /> Create Challenge
+          </Link>
+        </Button>
       </div>
 
       <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
         {challenges.map((challenge) => (
-          <div key={challenge.id} className='bg-white overflow-hidden shadow rounded-lg'>
-            <div className='p-6'>
+          <Card key={challenge.id}>
+            <CardHeader>
               <div className='flex items-center justify-between'>
-                <h2 className='text-xl font-semibold text-gray-900'>{challenge.title}</h2>
-                <span
-                  className={`px-2 py-1 text-xs font-semibold rounded-full flex items-center ${
+                <CardTitle>{challenge.title}</CardTitle>
+                <Badge
+                  variant={
                     challenge.difficulty === 'easy'
-                      ? 'bg-green-100 text-green-800'
+                      ? 'success'
                       : challenge.difficulty === 'medium'
-                      ? 'bg-yellow-100 text-yellow-800'
-                      : 'bg-red-100 text-red-800'
-                  }`}
+                      ? 'secondary'
+                      : 'destructive'
+                  }
+                  className='flex items-center'
                 >
-                  <Trophy className="h-3 w-3 mr-1" /> {challenge.difficulty}
-                </span>
+                  <Trophy className='h-3 w-3 mr-1' /> {challenge.difficulty}
+                </Badge>
               </div>
-              <div className='mt-2 flex items-center'>
-                <Award className="h-4 w-4 mr-1 text-blue-600" />
-                <span className="text-sm text-gray-600">{challenge.points} points</span>
+            </CardHeader>
+            <CardContent>
+              <div className='flex flex-col space-y-2'>
+                <div className='flex items-center'>
+                  <Award className='h-4 w-4 mr-1 text-blue-600' />
+                  <span className='text-sm text-gray-600'>{challenge.points} points</span>
+                </div>
+                <div className='flex items-center'>
+                  <User className='h-4 w-4 mr-1 text-gray-600' />
+                  <span className='text-sm text-gray-600'>
+                    Created by {challenge.profiles.username}
+                  </span>
+                </div>
               </div>
-              <div className='mt-4'>
-                <Link
-                  href={`/challenges/${challenge.id}`}
-                  className='text-blue-600 hover:text-blue-800'
-                >
-                  View Challenge →
-                </Link>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+            <CardFooter>
+              <Button variant='link' asChild className='px-0'>
+                <Link href={`/challenges/${challenge.id}`}>View Challenge →</Link>
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
